@@ -4,7 +4,7 @@ require 'faraday'
 module Smsc
   #Класс реализует отправку смс сообщений
   class Sms
-    attr_reader :options, :connection
+    attr_reader :params, :connection
 
     # Public: Создет новый объект класса Smsc::Sms
     #
@@ -24,14 +24,14 @@ module Smsc
         i.adapter  Faraday.default_adapter
       end
 
-      @options = { login: login, psw: password, charset: charset }
+      @params = { login: login, psw: password, charset: charset }
     end
 
     # Public: Метод отаправляет смс сообщение
     #
     #   message - String, текст сообщения
     #   phones  - Array, массив строк с номерами телефонов
-    #   options - Hash, с опциями отправляемого сообщения(optional):
+    #   opt - Hash, с опциями отправляемого сообщения(optional):
     #     :time - Время отправки SMS-сообщения абоненту:
     #      - 'DDMMYYhhmm' или 'DD.MM.YY hh:mm'
     #      - 'h1-h2' Задает диапазон времени в часах. Если текущее время меньше h1,
@@ -60,7 +60,7 @@ module Smsc
     #
     # Returns Faraday::Response
     def message(message, phones, opt = {})
-      opt.merge! @options.megre({phones: phones.join(','), mes: message})
+      opt.merge! @params.megre({phones: phones.join(','), mes: message})
       connection.post '/sys/send.php', opt
     end
   end
